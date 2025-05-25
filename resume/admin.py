@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PersonalInfo, Education, Experience, Skill, Project
+from .models import PersonalInfo, Education, Experience, Skill, Project, ContactMessage
 
 @admin.register(PersonalInfo)
 class PersonalInfoAdmin(admin.ModelAdmin):
@@ -27,3 +27,9 @@ class SkillAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'person')
     search_fields = ('name', 'description')
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'created_at')
+    search_fields = ('name', 'email')
+    list_filter = ('created_at',)

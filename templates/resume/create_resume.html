@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد رزومه</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --container-bg: rgba(30, 32, 66, 0.95);
+            --container-border: rgba(0, 255, 136, 0.2);
+            --neon-color: #00ff88;
+            --accent-color: #ff00cc;
+            --button-bg: linear-gradient(45deg, #ff00cc, #00ff88);
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            color: #ecf0f1;
+            direction: rtl;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: var(--container-bg);
+            padding: 40px;
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            border: 3px solid var(--container-border);
+        }
+        h1 {
+            color: #ecf0f1;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-shadow: 0 0 12px var(--accent-color);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--neon-color);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
+            font-size: 16px;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--button-bg);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .errorlist {
+            color: #ff6347;
+            font-size: 14px;
+            margin-bottom: 10px;
+            list-style: none;
+            padding: 0;
+        }
+        /* Tooltip Styles */
+        [data-tooltip] {
+            position: relative;
+        }
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -30px;
+            right: 50%;
+            transform: translateX(50%);
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInTooltip 0.3s forwards;
+        }
+        @keyframes fadeInTooltip {
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            .form-group label,
+            .form-group input,
+            .form-group textarea {
+                font-size: 14px;
+            }
+            button {
+                font-size: 16px;
+            }
+            [data-tooltip]:hover::after {
+                top: -40px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ایجاد رزومه جدید</h1>
+        <form method="POST" id="resume-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_name">نام و نام خانوادگی</label>
+                {{ form.name.errors }}
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">ایمیل</label>
+                {{ form.email.errors }}
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_phone">تلفن</label>
+                {{ form.phone.errors }}
+                {{ form.phone }}
+            </div>
+            <div class="form-group">
+                <label for="id_linkedin">لینکدین (URL)</label>
+                {{ form.linkedin.errors }}
+                {{ form.linkedin }}
+            </div>
+            <div class="form-group">
+                <label for="id_degree">مدرک تحصیلی</label>
+                {{ form.degree.errors }}
+                {{ form.degree }}
+            </div>
+            <div class="form-group">
+                <label for="id_university">دانشگاه</label>
+                {{ form.university.errors }}
+                {{ form.university }}
+            </div>
+            <div class="form-group">
+                <label for="id_edu_start">سال شروع تحصیل</label>
+                {{ form.edu_start.errors }}
+                {{ form.edu_start }}
+            </div>
+            <div class="form-group">
+                <label for="id_edu_end">سال پایان تحصیل</label>
+                {{ form.edu_end.errors }}
+                {{ form.edu_end }}
+            </div>
+            <div class="form-group">
+                <label for="id_title">عنوان شغلی</label>
+                {{ form.title.errors }}
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label for="id_company">شرکت</label>
+                {{ form.company.errors }}
+                {{ form.company }}
+            </div>
+            <div class="form-group">
+                <label for="id_exp_start">سال شروع کار</label>
+                {{ form.exp_start.errors }}
+                {{ form.exp_start }}
+            </div>
+            <div class="form-group">
+                <label for="id_exp_end">سال پایان کار</label>
+                {{ form.exp_end.errors }}
+                {{ form.exp_end }}
+            </div>
+            <div class="form-group">
+                <label for="id_description">توضیحات تجربه کاری</label>
+                {{ form.description.errors }}
+                {{ form.description }}
+            </div>
+            <div class="form-group">
+                <label for="id_skills">مهارت‌ها (با کاما جدا کنید)</label>
+                {{ form.skills.errors }}
+                {{ form.skills }}
+            </div>
+            <div class="form-group">
+                <label for="id_project_name">نام پروژه</label>
+                {{ form.project_name.errors }}
+                {{ form.project_name }}
+            </div>
+            <div class="form-group">
+                <label for="id_project_description">توضیحات پروژه</label>
+                {{ form.project_description.errors }}
+                {{ form.project_description }}
+            </div>
+            <div class="form-group">
+                <label for="id_project_link">لینک پروژه (URL)</label>
+                {{ form.project_link.errors }}
+                {{ form.project_link }}
+            </div>
+            <button type="submit" data-tooltip="ایجاد و ذخیره رزومه">ایجاد رزومه</button>
+        </form>
+    </div>
+    <script>
+        const resumeForm = document.getElementById('resume-form');
+
+        // پر کردن فرم رزومه از Local Storage
+        window.addEventListener('load', () => {
+            const savedFormData = localStorage.getItem('resumeFormData');
+            if (savedFormData) {
+                const formData = JSON.parse(savedFormData);
+                for (const [key, value] of Object.entries(formData)) {
+                    const input = document.getElementById(`id_${key}`);
+                    if (input) input.value = value;
+                }
+            }
+        });
+
+        // ذخیره داده‌های فرم رزومه هنگام تغییر
+        resumeForm.addEventListener('input', () => {
+            const formData = {};
+            const inputs = resumeForm.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (input.name) formData[input.name] = input.value;
+            });
+            localStorage.setItem('resumeFormData', JSON.stringify(formData));
+        });
+
+        // پاک کردن داده‌های فرم پس از ارسال موفق
+        resumeForm.addEventListener('submit', () => {
+            localStorage.removeItem('resumeFormData');
+        });
+    </script>
+</body>
+</html>

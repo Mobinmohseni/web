@@ -1,0 +1,20 @@
+from django import forms
+
+class ResumeForm(forms.Form):
+    name = forms.CharField(max_length=100, label='نام و نام خانوادگی', required=True)
+    email = forms.EmailField(label='ایمیل', required=True)
+    phone = forms.CharField(max_length=20, label='تلفن', required=True)
+    linkedin = forms.URLField(label='لینکدین', required=True)
+    degree = forms.CharField(max_length=100, label='مدرک تحصیلی', required=False)
+    university = forms.CharField(max_length=100, label='دانشگاه', required=False)
+    edu_start = forms.CharField(max_length=4, label='سال شروع تحصیل', required=False)
+    edu_end = forms.CharField(max_length=4, label='سال پایان تحصیل', required=False)
+    title = forms.CharField(max_length=100, label='عنوان شغلی', required=False)
+    company = forms.CharField(max_length=100, label='شرکت', required=False)
+    exp_start = forms.CharField(max_length=4, label='سال شروع کار', required=False)
+    exp_end = forms.CharField(max_length=4, label='سال پایان کار', required=False)
+    description = forms.CharField(widget=forms.Textarea, label='توضیحات تجربه کاری', required=False)
+    skills = forms.CharField(label='مهارت‌ها (با کاما جدا کنید)', required=False)
+    project_name = forms.CharField(max_length=100, label='نام پروژه', required=False)
+    project_description = forms.CharField(widget=forms.Textarea, label='توضیحات پروژه', required=False)
+    project_link = forms.URLField(label='لینک پروژه', required=False)

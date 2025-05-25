@@ -6,9 +6,15 @@
     <title>رزومه</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('https://cdn.fontcdn.ir/Font/Persian/IRANSans/IRANSansWeb(FaNum).ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         :root {
-            /* متغیرهای پیش‌فرض برای تم (در جاوااسکریپت تغییر می‌کنند) */
             --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             --container-bg: rgba(30, 32, 66, 0.95);
             --container-border: rgba(0, 255, 136, 0.2);
@@ -20,7 +26,7 @@
             --hover-shadow: rgba(0, 255, 136, 0.3);
         }
         body {
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: 'IRANSans', 'Vazirmatn', sans-serif;
             margin: 0;
             padding: 0;
             background: var(--bg-gradient);
@@ -30,23 +36,44 @@
             min-height: 100vh;
             position: relative;
         }
-        /* افکت ستاره‌های متحرک در پس‌زمینه */
-        body::before {
-            content: '';
-            position: absolute;
+        #particles-js {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.5)"/></svg>') repeat;
-            animation: starTwinkle 40s infinite linear;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.7;
         }
-        @keyframes starTwinkle {
-            0% { background-position: 0 0; opacity: 0.5; }
-            50% { opacity: 0.7; }
-            100% { background-position: 1200px 1200px; opacity: 0.5; }
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            z-index: 1002;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader {
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid var(--neon-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .sidebar {
             position: fixed;
@@ -71,13 +98,14 @@
             margin: 0 0 25px 0;
             font-size: 26px;
             text-align: center;
-            color: var(--neon-color);
-            text-shadow: 0 0 12px var(--neon-color), 0 0 24px var(--neon-color);
+            background: var(--button-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             animation: neonPulse 1.8s infinite alternate;
         }
         @keyframes neonPulse {
             0% { text-shadow: 0 0 6px var(--neon-color), 0 0 12px var(--neon-color); }
-            100% { text-shadow: 0 0 18px var(--neon-color), 0 0 36px var(--neon-color), 0 0 54px var(--neon-color); }
+            100% { text-shadow: 0 0 18px var(--neon-color), 0 0 36px var(--neon-color); }
         }
         .sidebar ul {
             list-style-type: none;
@@ -100,7 +128,7 @@
             padding: 14px 20px;
             border-radius: 14px;
             background: rgba(255, 255, 255, 0.15);
-            transition: background 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+            transition: all 0.4s ease;
         }
         .sidebar a:hover {
             background: var(--button-bg);
@@ -121,20 +149,42 @@
             z-index: 1001;
             font-size: 18px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        .toggle-btn:hover {
-            transform: rotate(1080deg) scale(1.25);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+        .theme-btn {
+            position: fixed;
+            top: 80px;
+            left: 20px;
             background: var(--button-bg);
+            color: #fff;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 18px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .toggle-btn i {
-            transition: transform 0.5s ease;
+        .toggle-btn:hover, .theme-btn:hover {
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+            animation: shake 0.3s;
         }
-        .toggle-btn:hover i {
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-5px); }
+        }
+        .toggle-btn i, .theme-btn i {
+            transition: transform 0.3s ease;
+        }
+        .toggle-btn:hover i, .theme-btn:hover i {
             transform: scale(1.4) rotate(360deg);
         }
         .container {
@@ -144,30 +194,23 @@
             padding: 70px;
             box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
             border-radius: 30px;
-            animation: floatIn 1.5s ease-out;
             position: relative;
             overflow: hidden;
             border: 3px solid var(--container-border);
         }
-        @keyframes floatIn {
-            from { opacity: 0; transform: translateY(60px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
         .container::before {
             content: '';
             position: absolute;
-            top: -150%;
-            left: -150%;
-            width: 400%;
-            height: 400%;
-            background: radial-gradient(circle, var(--accent-color), transparent);
-            animation: swirlGlow 30s linear infinite;
-            z-index: -1;
-            opacity: 0.3;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--neon-color), transparent);
+            animation: lightBar 2s infinite;
         }
-        @keyframes swirlGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes lightBar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
         }
         h1 {
             color: #ecf0f1;
@@ -175,7 +218,9 @@
             margin-bottom: 40px;
             font-size: 44px;
             font-weight: 900;
-            text-shadow: var(--text-shadow);
+            background: var(--button-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             animation: pulseTitle 2.2s infinite;
         }
         @keyframes pulseTitle {
@@ -188,16 +233,13 @@
             padding: 35px;
             border-radius: 18px;
             background: rgba(255, 255, 255, 0.1);
-            transition: transform 0.6s ease, box-shadow 0.6s ease;
-            animation: slideUp 1.2s ease-out;
+            transition: all 0.6s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
         .section:hover {
-            transform: translateY(-12px) rotate(1.5deg);
+            transform: translateY(-12px) rotateY(10deg);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .section h2 {
             color: var(--neon-color);
@@ -205,22 +247,23 @@
             padding-bottom: 15px;
             margin-bottom: 30px;
             font-size: 30px;
-            position: relative;
-            overflow: hidden;
+            background: var(--button-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .section h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -100%;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-            animation: slideBorderNeon 2s infinite;
+        .section h2 svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--neon-color);
+            animation: iconPulse 1.5s infinite;
         }
-        @keyframes slideBorderNeon {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(200%); }
+        @keyframes iconPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         .contact-info {
             text-align: center;
@@ -229,30 +272,31 @@
             background: linear-gradient(45deg, rgba(20, 26, 61, 0.8), rgba(42, 42, 94, 0.8));
             border-radius: 18px;
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
-            animation: fadeInUp 1.5s ease-out;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+            transition: all 0.5s ease;
         }
         .contact-info p {
             margin: 15px 0;
             font-size: 20px;
             color: #ecf0f1;
-            transition: transform 0.5s ease, text-shadow 0.5s ease;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .contact-info p:hover {
             transform: scale(1.12);
             text-shadow: 0 0 12px var(--neon-color);
         }
-        .contact-info i {
-            margin-left: 15px;
-            color: var(--accent-color);
-            font-size: 24px;
-            transition: transform 0.7s ease;
+        .contact-info svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--accent-color);
+            transition: all 0.7s ease;
         }
-        .contact-info p:hover i {
-            transform: rotateY(360deg) scale(1.3);
+        .contact-info p:hover svg {
+            transform: rotate(360deg) scale(1.3);
         }
         ul {
             list-style-type: none;
@@ -263,12 +307,7 @@
             font-size: 18px;
             position: relative;
             padding-right: 30px;
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
-            animation: fadeInItem 1s ease-out;
-        }
-        @keyframes fadeInItem {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+            transition: all 0.5s ease;
         }
         li::before {
             content: '\f005';
@@ -291,37 +330,55 @@
             border-radius: 15px;
             margin-bottom: 30px;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-            transition: transform 0.6s ease, box-shadow 0.6s ease, background 0.6s ease;
-            animation: popIn 0.8s ease-out;
+            transition: all 0.6s ease;
+            transform-style: preserve-3d;
         }
         .experience-item:hover, .project-item:hover {
-            transform: scale(1.08) rotate(2deg);
+            transform: scale(1.08) rotateY(10deg);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
             background: rgba(255, 255, 255, 0.2);
         }
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
+        .skill-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         .skill {
-            display: inline-block;
-            background: var(--button-bg);
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 35px;
-            margin: 12px;
-            font-size: 17px;
-            transition: transform 0.6s ease, box-shadow 0.6s ease;
-            animation: bounceSkill 3s infinite;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            flex: 1 1 200px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .skill:hover {
-            transform: scale(1.4) rotate(15deg);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
-        @keyframes bounceSkill {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .skill svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--neon-color);
+            animation: iconPulse 1.5s infinite;
+        }
+        .skill-name {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--neon-color);
+        }
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            height: 10px;
+            flex-grow: 1;
+        }
+        .progress {
+            background: var(--button-bg);
+            height: 100%;
+            transition: width 1s ease;
         }
         .no-selection {
             text-align: center;
@@ -331,14 +388,11 @@
             background: var(--button-bg);
             border-radius: 18px;
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-            animation: pulseNoSelect 2.5s infinite;
+            transition: all 0.5s ease;
         }
-        @keyframes pulseNoSelect {
-            0% { transform: scale(1); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); }
-            50% { transform: scale(1.1); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6); }
-            100% { transform: scale(1); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); }
+        .no-selection:hover {
+            transform: scale(1.1);
         }
-        /* افکت‌های هاور لیست‌ها بر اساس جهت ماوس */
         li.mouse-from-left:hover {
             transform: translate(-10px, -10px);
             box-shadow: 0 8px 20px var(--hover-shadow);
@@ -347,24 +401,32 @@
             transform: translate(10px, -10px);
             box-shadow: 0 8px 20px var(--accent-color);
         }
-        /* استایل فرم تماس */
         .contact-form {
             margin-top: 70px;
             padding: 40px;
             background: linear-gradient(45deg, rgba(20, 26, 61, 0.8), rgba(42, 42, 94, 0.8));
             border-radius: 18px;
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
-            animation: fadeInUp 1.5s ease-out;
+            transition: all 0.5s ease;
         }
         .contact-form h2 {
             color: var(--neon-color);
             text-align: center;
             margin-bottom: 30px;
             font-size: 30px;
-            text-shadow: 0 0 12px var(--neon-color);
+            background: var(--button-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .contact-form .form-group {
             margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInForm 0.5s ease-out forwards;
+            animation-delay: calc(0.1s * var(--i));
+        }
+        @keyframes slideInForm {
+            to { opacity: 1; transform: translateY(0); }
         }
         .contact-form label {
             display: block;
@@ -381,14 +443,14 @@
             background: rgba(255, 255, 255, 0.1);
             color: #ecf0f1;
             font-size: 16px;
-            font-family: 'Vazirmatn', sans-serif;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'IRANSans', 'Vazirmatn', sans-serif;
+            transition: all 0.3s ease;
         }
         .contact-form input:focus,
         .contact-form textarea:focus {
-            outline: none;
             border-color: var(--accent-color);
             box-shadow: 0 0 10px var(--accent-color);
+            transform: scale(1.02);
         }
         .contact-form textarea {
             height: 150px;
@@ -404,14 +466,76 @@
             border-radius: 10px;
             font-size: 18px;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
         }
         .contact-form button:hover {
-            transform: scale(1.05);
+            transform: scale(1.05) rotate(2deg);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            animation: shake 0.3s;
+        }
+        .messages {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .messages .success {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            transition: all 0.5s ease;
+        }
+        .messages .error {
+            background: rgba(255, 99, 71, 0.2);
+            color: #ff6347;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            transition: all 0.5s ease;
+        }
+        [data-tooltip] {
+            position: relative;
+        }
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -30px;
+            right: 50%;
+            transform: translateX(50%);
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInTooltip 0.3s forwards;
+        }
+        @keyframes fadeInTooltip {
+            to { opacity: 1; }
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, rgba(20, 26, 61, 0.8), rgba(42, 42, 94, 0.8));
+            border-radius: 18px;
+            margin: 20px auto;
+            max-width: 1050px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+        }
+        .social-links a {
+            color: #ecf0f1;
+            font-size: 24px;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+        .social-links a:hover {
+            color: var(--neon-color);
+            transform: scale(1.3) rotate(15deg);
         }
         @media (max-width: 768px) {
-            .container {
+            .container, footer {
                 margin: 140px 20px 50px;
                 padding: 40px;
             }
@@ -422,7 +546,7 @@
             .sidebar.open {
                 right: 10px;
             }
-            .toggle-btn {
+            .toggle-btn, .theme-btn {
                 padding: 12px 20px;
                 font-size: 16px;
             }
@@ -432,35 +556,64 @@
             .section h2, .contact-form h2 {
                 font-size: 26px;
             }
-            .contact-info p, li, .skill, .contact-form label, .contact-form input, .contact-form textarea {
+            .contact-info p, li, .skill-name, .contact-form label, .contact-form input, .contact-form textarea {
                 font-size: 16px;
             }
             .contact-form {
                 padding: 30px;
             }
+            [data-tooltip]:hover::after {
+                top: -40px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-users"></i> منو کاربران</button>
+    <div id="loading">
+        <div class="loader"></div>
+    </div>
+    <div id="particles-js"></div>
+    <button class="toggle-btn" onclick="toggleSidebar()" data-tooltip="نمایش/مخفی کردن داشبورد"><i class="fas fa-users"></i> منو کاربران</button>
+    <button class="theme-btn" onclick="changeTheme()" data-tooltip="تغییر تم"><i class="fas fa-palette"></i> تغییر تم</button>
     <div class="sidebar" id="sidebar">
         <h3>کاربران</h3>
-        <ul>
+        <ul id="user-list">
+            <li style="--i: 0;"><a href="{% url 'create_resume' %}" data-tooltip="ایجاد رزومه جدید">ایجاد رزومه جدید</a></li>
             {% for user in users %}
-                <li style="--i: {{ forloop.counter }};"><a href="{% url 'resume_user' user.id %}">{{ user.name }}</a></li>
+                <li style="--i: {{ forloop.counter }};"><a href="{% url 'resume_user' user.id %}" data-tooltip="مشاهده رزومه {{ user.name }}">{{ user.name }}</a></li>
             {% endfor %}
         </ul>
     </div>
     <div class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% if person %}
             <h1>{{ person.name }}</h1>
             <div class="contact-info">
-                <p><i class="fas fa-envelope"></i> ایمیل: {{ person.email }}</p>
-                <p><i class="fas fa-phone"></i> تلفن: {{ person.phone }}</p>
-                <p><i class="fab fa-linkedin"></i> لینکدین: <a href="{{ person.linkedin }}">{{ person.linkedin }}</a></p>
+                <p class="copy-email" data-tooltip="برای کپی ایمیل دوبار کلیک کنید">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+                    ایمیل: {{ person.email }}
+                </p>
+                <p>
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.02l-2.2 2.2z"/></svg>
+                    تلفن: {{ person.phone }}
+                </p>
+                <p>
+                    <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    لینکدین: <a href="{{ person.linkedin }}">{{ person.linkedin }}</a>
+                </p>
             </div>
             <div class="section">
-                <h2>تحصیلات</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    تحصیلات
+                </h2>
                 <ul>
                     {% for edu in person.education.all %}
                         <li class="hover-item">{{ edu.degree }} از {{ edu.university }} ({{ edu.start }} - {{ edu.end }})</li>
@@ -468,7 +621,10 @@
                 </ul>
             </div>
             <div class="section">
-                <h2>تجربیات کاری</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-2 .89-2 2v11c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
+                    تجربیات کاری
+                </h2>
                 <ul>
                     {% for exp in person.experience.all %}
                         <li class="experience-item hover-item">
@@ -479,15 +635,27 @@
                 </ul>
             </div>
             <div class="section">
-                <h2>مهارت‌ها</h2>
-                <div>
+                <h2>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    مهارت‌ها
+                </h2>
+                <div class="skill-container">
                     {% for skill in person.skills.all %}
-                        <span class="skill">{{ skill.name }}</span>
+                        <div class="skill">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.258L22 9.272l-5 4.87 1.18 6.878L12 17.77l-6.18 3.25L7 14.142 2 12.272l6.91-1.014L12 2z"/></svg>
+                            <div class="skill-name">{{ skill.name }}</div>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: {% widthratio skill.name|length 10 80 %}%;"></div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="section">
-                <h2>پروژه‌ها</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    پروژه‌ها
+                </h2>
                 <ul>
                     {% for project in person.projects.all %}
                         <li class="project-item hover-item">
@@ -496,31 +664,37 @@
                     {% endfor %}
                 </ul>
             </div>
-            <!-- فرم تماس -->
             <div class="contact-form">
                 <h2>تماس با من</h2>
-                <form action="https://formspree.io/f/xjkwwljb" method="POST">
-                    <div class="form-group">
+                <form action="{% url 'contact_form' %}" method="POST" id="contact-form">
+                    {% csrf_token %}
+                    <div class="form-group" style="--i: 1;">
                         <label for="name">نام و نام خانوادگی</label>
                         <input type="text" id="name" name="name" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="--i: 2;">
                         <label for="email">ایمیل</label>
                         <input type="email" id="email" name="email" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="--i: 3;">
                         <label for="message">توضیحات</label>
                         <textarea id="message" name="message" required></textarea>
                     </div>
-                    <button type="submit">ارسال</button>
+                    <button type="submit" data-tooltip="ارسال پیام به صاحب رزومه">ارسال</button>
                 </form>
             </div>
         {% else %}
-            <p class="no-selection">لطفاً یک کاربر را از داشبورد انتخاب کنید.</p>
+            <p class="no-selection">لطفاً یک کاربر را از داشبورد انتخاب کنید یا <a href="{% url 'create_resume' %}">رزومه جدید ایجاد کنید</a>.</p>
         {% endif %}
     </div>
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com" target="_blank" data-tooltip="لینکدین"><i class="fab fa-linkedin"></i></a>
+            <a href="https://twitter.com" target="_blank" data-tooltip="توییتر"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com" target="_blank" data-tooltip="گیت‌هاب"><i class="fab fa-github"></i></a>
+        </div>
+    </footer>
     <script>
-        // تعریف تم‌های رنگی مختلف
         const themes = [
             {
                 bgGradient: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
@@ -531,7 +705,8 @@
                 accentColor: '#ff00cc',
                 textShadow: '0 0 12px #ff00cc, 0 0 24px #ff00cc',
                 buttonBg: 'linear-gradient(45deg, #ff00cc, #00ff88)',
-                hoverShadow: 'rgba(0, 255, 136, 0.3)'
+                hoverShadow: 'rgba(0, 255, 136, 0.3)',
+                particleColor: '#00ff88'
             },
             {
                 bgGradient: 'linear-gradient(135deg, #1a1a1a, #3a2f5f, #1f1f3f)',
@@ -542,7 +717,8 @@
                 accentColor: '#ffd700',
                 textShadow: '0 0 12px #ffd700, 0 0 24px #ffd700',
                 buttonBg: 'linear-gradient(45deg, #ffd700, #ff6347)',
-                hoverShadow: 'rgba(255, 99, 71, 0.3)'
+                hoverShadow: 'rgba(255, 99, 71, 0.3)',
+                particleColor: '#ffd700'
             },
             {
                 bgGradient: 'linear-gradient(135deg, #0d1b2a, #1b263b, #415a77)',
@@ -553,7 +729,8 @@
                 accentColor: '#ff4500',
                 textShadow: '0 0 12px #ff4500, 0 0 24px #ff4500',
                 buttonBg: 'linear-gradient(45deg, #ff4500, #00bfff)',
-                hoverShadow: 'rgba(0, 191, 255, 0.3)'
+                hoverShadow: 'rgba(0, 191, 255, 0.3)',
+                particleColor: '#00bfff'
             },
             {
                 bgGradient: 'linear-gradient(135deg, #2d3436, #636e72, #b2bec3)',
@@ -564,13 +741,24 @@
                 accentColor: '#9400d3',
                 textShadow: '0 0 12px #9400d3, 0 0 24px #9400d3',
                 buttonBg: 'linear-gradient(45deg, #9400d3, #ff0)',
-                hoverShadow: 'rgba(255, 245, 0, 0.3)'
+                hoverShadow: 'rgba(255, 245, 0, 0.3)',
+                particleColor: '#9400d3'
+            },
+            {
+                bgGradient: 'linear-gradient(135deg, #ffecd2, #fcb69f, #ff9a9e)',
+                containerBg: 'rgba(255, 245, 230, 0.95)',
+                containerBorder: 'rgba(255, 165, 0, 0.2)',
+                sidebarBg: 'linear-gradient(180deg, #ffb6c1, #ffebcd)',
+                neonColor: '#ff8c00',
+                accentColor: '#ff1493',
+                textShadow: '0 0 12px #ff1493, 0 0 24px #ff1493',
+                buttonBg: 'linear-gradient(45deg, #ff1493, #ff8c00)',
+                hoverShadow: 'rgba(255, 165, 0, 0.3)',
+                particleColor: '#ff8c00'
             }
         ];
 
-        // انتخاب تصادفی تم هنگام بارگذاری صفحه
-        function applyRandomTheme() {
-            const theme = themes[Math.floor(Math.random() * themes.length)];
+        function applyTheme(theme) {
             document.documentElement.style.setProperty('--bg-gradient', theme.bgGradient);
             document.documentElement.style.setProperty('--container-bg', theme.containerBg);
             document.documentElement.style.setProperty('--container-border', theme.containerBorder);
@@ -582,22 +770,103 @@
             document.documentElement.style.setProperty('--hover-shadow', theme.hoverShadow);
         }
 
-        // اعمال تم هنگام بارگذاری صفحه
-        window.addEventListener('load', applyRandomTheme);
+        function getRandomParticleConfig(theme) {
+            const particleCount = Math.floor(Math.random() * (150 - 100) + 100);
+            const speed = Math.random() * (4 - 1) + 1;
+            const shape = ['circle', 'triangle', 'star'][Math.floor(Math.random() * 3)];
+            return {
+                particles: {
+                    number: { value: particleCount, density: { enable: true, value_area: 800 } },
+                    color: { value: theme.particleColor },
+                    shape: { type: shape },
+                    opacity: { value: 0.6, random: true },
+                    size: { value: 4, random: true },
+                    line_linked: { enable: true, distance: 150, color: theme.particleColor, opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: speed, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            };
+        }
 
-        // مدیریت داشبورد
+        function applyRandomTheme() {
+            localStorage.removeItem('themeIndex');
+            const themeIndex = Math.floor(Math.random() * themes.length);
+            localStorage.setItem('themeIndex', themeIndex);
+            applyTheme(themes[themeIndex]);
+            particlesJS('particles-js', getRandomParticleConfig(themes[themeIndex]));
+        }
+
+        function changeTheme() {
+            let themeIndex = parseInt(localStorage.getItem('themeIndex') || '0');
+            themeIndex = (themeIndex + 1) % themes.length;
+            localStorage.setItem('themeIndex', themeIndex);
+            applyTheme(themes[themeIndex]);
+            particlesJS('particles-js', getRandomParticleConfig(themes[themeIndex]));
+        }
+
+        function saveUsersToLocalStorage() {
+            const users = JSON.parse('{{ users_json | safe }}');
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function loadUsersFromLocalStorage() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userList = document.getElementById('user-list');
+            userList.innerHTML = '<li style="--i: 0;"><a href="{% url 'create_resume' %}" data-tooltip="ایجاد رزومه جدید">ایجاد رزومه جدید</a></li>';
+            users.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.style = `--i: ${index + 1}`;
+                li.innerHTML = `<a href="/resume/${user.id}/" data-tooltip="مشاهده رزومه ${user.name}">${user.name}</a>`;
+                userList.appendChild(li);
+            });
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 2000);
+            applyRandomTheme();
+            saveUsersToLocalStorage();
+            loadUsersFromLocalStorage();
+
+            const contactForm = document.getElementById('contact-form');
+            const savedFormData = localStorage.getItem('contactFormData');
+            if (savedFormData) {
+                const formData = JSON.parse(savedFormData);
+                document.getElementById('name').value = formData.name || '';
+                document.getElementById('email').value = formData.email || '';
+                document.getElementById('message').value = formData.message || '';
+            }
+
+            contactForm.addEventListener('input', () => {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    message: document.getElementById('message').value
+                };
+                localStorage.setItem('contactFormData', JSON.stringify(formData));
+            });
+
+            contactForm.addEventListener('submit', () => {
+                localStorage.removeItem('contactFormData');
+            });
+        });
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('open');
         }
 
-        // تشخیص جهت ورود ماوس به آیتم‌های لیست
         document.querySelectorAll('.hover-item').forEach(item => {
             item.addEventListener('mouseenter', (e) => {
                 const rect = item.getBoundingClientRect();
                 const mouseX = e.clientX;
                 const itemCenter = rect.left + rect.width / 2;
-
                 item.classList.remove('mouse-from-left', 'mouse-from-right');
                 if (mouseX < itemCenter) {
                     item.classList.add('mouse-from-left');
@@ -608,6 +877,17 @@
 
             item.addEventListener('mouseleave', () => {
                 item.classList.remove('mouse-from-left', 'mouse-from-right');
+            });
+        });
+
+        document.querySelectorAll('.copy-email').forEach(item => {
+            item.addEventListener('dblclick', () => {
+                const email = item.textContent.split(': ')[1];
+                navigator.clipboard.writeText(email).then(() => {
+                    alert('ایمیل کپی شد: ' + email);
+                }).catch(err => {
+                    console.error('خطا در کپی ایمیل:', err);
+                });
             });
         });
     </script>
