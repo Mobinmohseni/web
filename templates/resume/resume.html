@@ -52,9 +52,9 @@
             right: -300px;
             width: 280px;
             background: var(--sidebar-bg);
-            padding: 30px;
             color: #ecf0f1;
-            border-radius: 20px;
+            padding: 30px;
+            border-radius: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
             z-index: 1000;
             transition: right 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55), transform 0.5s ease, opacity 0.5s ease;
@@ -119,7 +119,7 @@
             z-index: 1001;
             font-size: 18px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -127,6 +127,7 @@
         .toggle-btn:hover {
             transform: rotate(1080deg) scale(1.25);
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+            background: var(--button-bg);
         }
         .toggle-btn i {
             transition: transform 0.5s ease;
@@ -147,8 +148,8 @@
             border: 3px solid var(--container-border);
         }
         @keyframes floatIn {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(60px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .container::before {
             content: '';
@@ -159,7 +160,7 @@
             height: 400%;
             background: radial-gradient(circle, var(--accent-color), transparent);
             animation: swirlGlow 30s linear infinite;
-            z-index: 0;
+            z-index: -1;
             opacity: 0.3;
         }
         @keyframes swirlGlow {
@@ -248,6 +249,7 @@
             color: var(--accent-color);
             font-size: 24px;
             transition: transform 0.7s ease;
+            position: relative;
         }
         .contact-info p:hover i {
             transform: rotateY(360deg) scale(1.3);
@@ -401,6 +403,7 @@
             font-size: 18px;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         .contact-form button:hover {
             transform: scale(1.05);
@@ -426,6 +429,7 @@
             margin: 10px 0;
             animation: fadeInUp 1s ease-out;
         }
+        /* Tooltip Styles */
         [data-tooltip] {
             position: relative;
         }
@@ -505,9 +509,9 @@
         {% if person %}
             <h1>{{ person.name }}</h1>
             <div class="contact-info">
-                <p class="copy-email" data-tooltip="برای کپی ایمیل دوبار کلیک کنید"><i class="fas fa-envelope"></i> ایمیل: {{ person.email }}</p>
-                <p><i class="fas fa-phone"></i> تلفن: {{ person.phone }}</p>
-                <p><i class="fab fa-linkedin"></i> لینکدین: <a href="{{ person.linkedin }}">{{ person.linkedin }}</a></p>
+                <p class="copy-email" data-tooltip="برای کپی ایمیل دوبار کلیک کنید"><i class="fas fa-envelope" data-tooltip="ایمیل"></i> ایمیل: {{ person.email }}</p>
+                <p><i class="fas fa-phone" data-tooltip="تلفن"></i> تلفن: {{ person.phone }}</p>
+                <p><i class="fab fa-linkedin" data-tooltip="لینکدین"></i> لینکدین: <a href="{{ person.linkedin }}">{{ person.linkedin }}</a></p>
             </div>
             <div class="section">
                 <h2>تحصیلات</h2>
@@ -548,9 +552,8 @@
             </div>
             <div class="contact-form">
                 <h2>تماس با من</h2>
-                <form id="contact-form" onsubmit="handleSubmit(event)">
-                    <input type="hidden" name="_next" value="https://mobin-mohseni.liara.run/resume/">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <form action="{% url 'contact_form' %}" method="POST" id="contact-form">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="name">نام و نام خانوادگی</label>
                         <input type="text" id="name" name="name" required>
@@ -614,79 +617,46 @@
                 accentColor: '#9400d3',
                 textShadow: '0 0 12px #9400d3, 0 0 24px #9400d3',
                 buttonBg: 'linear-gradient(45deg, #9400d3, #ff0)',
-                hoverShadow: 'rgba(255, 245, 0, .3)'
+                hoverShadow: 'rgba(255, 245, 0, 0.3)'
             }
         ];
 
         function applyTheme(theme) {
-            Object.entries(theme).forEach(([key, value]) => {
-                document.documentElement.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
-            });
+            document.documentElement.style.setProperty('--bg-gradient', theme.bgGradient);
+            document.documentElement.style.setProperty('--container-bg', theme.containerBg);
+            document.documentElement.style.setProperty('--container-border', theme.containerBorder);
+            document.documentElement.style.setProperty('--sidebar-bg', theme.sidebarBg);
+            document.documentElement.style.setProperty('--neon-color', theme.neonColor);
+            document.documentElement.style.setProperty('--accent-color', theme.accentColor);
+            document.documentElement.style.setProperty('--text-shadow', theme.textShadow);
+            document.documentElement.style.setProperty('--button-bg', theme.buttonBg);
+            document.documentElement.style.setProperty('--hover-shadow', theme.hoverShadow);
         }
 
         function applyRandomTheme() {
+            localStorage.removeItem('themeIndex'); // حذف تم ذخیره‌شده
             const themeIndex = Math.floor(Math.random() * themes.length);
             localStorage.setItem('themeIndex', themeIndex);
             applyTheme(themes[themeIndex]);
         }
 
+        // ذخیره لیست کاربران در Local Storage
         function saveUsersToLocalStorage() {
             const users = JSON.parse('{{ users_json | safe }}');
             localStorage.setItem('users', JSON.stringify(users));
         }
 
+        // بارگذاری لیست کاربران از Local Storage
         function loadUsersFromLocalStorage() {
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const userList = document.getElementById('user-list');
             userList.innerHTML = '<li style="--i: 0;"><a href="{% url 'create_resume' %}" data-tooltip="ایجاد رزومه جدید">ایجاد رزومه جدید</a></li>';
             users.forEach((user, index) => {
                 const li = document.createElement('li');
-                li.style.setProperty('--i', index + 1);
+                li.style = `--i: ${index + 1}`;
                 li.innerHTML = `<a href="/resume/${user.id}/" data-tooltip="مشاهده رزومه ${user.name}">${user.name}</a>`;
                 userList.appendChild(li);
             });
-        }
-
-        async function handleSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            const messagesDiv = document.querySelector('.messages') || document.createElement('div');
-            messagesDiv.className = 'messages';
-            if (!messagesDiv.parentElement) {
-                form.parentElement.prepend(messagesDiv);
-            }
-
-            try {
-                // ارسال به Formspree
-                const formspreeResponse = await fetch('https://formspree.io/f/xjkwwljb', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                // ارسال به Django
-                const djangoResponse = await fetch('{% url 'contact_form' %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-Token': form.querySelector('[name="csrfmiddlewaretoken"]').value,
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                });
-
-                if (formspreeResponse.ok && djangoResponse.ok) {
-                    localStorage.removeItem('contactFormData');
-                    messagesDiv.innerHTML = '<span class="success">پیام با موفقیت ارسال شد!</span>';
-                    form.reset();
-                    setTimeout(() => window.location.href = form.querySelector('[name="_next"]').value, 1000);
-                } else {
-                    messagesDiv.innerHTML = '<span class="error">خطا در ارسال پیام. لطفاً دوباره تلاش کنید.</span>';
-                }
-            } catch (error) {
-                console.error('خطا:', error);
-                messagesDiv.innerHTML = '<span class="error">خطا در ارسال پیام.</span>';
-            }
         }
 
         window.addEventListener('load', () => {
@@ -694,6 +664,7 @@
             saveUsersToLocalStorage();
             loadUsersFromLocalStorage();
 
+            // پر کردن فرم تماس از Local Storage
             const contactForm = document.getElementById('contact-form');
             const savedFormData = localStorage.getItem('contactFormData');
             if (savedFormData) {
@@ -703,6 +674,7 @@
                 document.getElementById('message').value = formData.message || '';
             }
 
+            // ذخیره داده‌های فرم تماس هنگام تغییر
             contactForm.addEventListener('input', () => {
                 const formData = {
                     name: document.getElementById('name').value,
@@ -710,6 +682,11 @@
                     message: document.getElementById('message').value
                 };
                 localStorage.setItem('contactFormData', JSON.stringify(formData));
+            });
+
+            // پاک کردن داده‌های فرم پس از ارسال موفق
+            contactForm.addEventListener('submit', () => {
+                localStorage.removeItem('contactFormData');
             });
         });
 
@@ -737,13 +714,14 @@
             });
         });
 
+        // رویداد دبل‌کلیک برای کپی ایمیل
         document.querySelectorAll('.copy-email').forEach(item => {
             item.addEventListener('dblclick', () => {
                 const email = item.textContent.split(': ')[1];
                 navigator.clipboard.writeText(email).then(() => {
                     alert('ایمیل کپی شد: ' + email);
-                }).catch(error => {
-                    console.error('خطا در کپی ایمیل:', error);
+                }).catch(err => {
+                    console.error('خطا در کپی ایمیل:', err);
                 });
             });
         });
