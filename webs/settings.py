@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-bs9vvkal91(t3jay6vtkmcjxn=yj50r5ad06luz1dotmr_p%wv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mobin-mohseni.liara.run', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://mobin-mohseni.liara.run']
 
 
 # Application definition
