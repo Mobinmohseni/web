@@ -176,9 +176,9 @@
             animation: pulseTitle 2.2s infinite;
         }
         @keyframes pulseTitle {
-            0% { opacity: 0; transform: translateY(60px); }
+            0% { transform: scale(1); }
             50% { transform: scale(1.06); }
-            100% { opacity: 1; transform: translateY(0); }
+            100% { transform: scale(1); }
         }
         .section {
             margin-bottom: 70px;
@@ -642,7 +642,7 @@
             users.forEach((user, index) => {
                 const li = document.createElement('li');
                 li.style.setProperty('--i', index + 1);
-                li.innerHTML = `<a href="{% url 'resume_user' user.id %}" data-tooltip="مشاهده رزومه ${user.name}">${user.name}</a>`;
+                li.innerHTML = `<a href="/resume/${user.id}/" data-tooltip="مشاهده رزومه ${user.name}">${user.name}</a>`;
                 userList.appendChild(li);
             });
         }
